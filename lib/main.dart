@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'views/test_view.dart';
+import 'views/form_view.dart';
 
 void main() {
   runApp(const MyApp());
@@ -7,14 +7,13 @@ void main() {
 
 class MyApp extends StatelessWidget {
   const MyApp({super.key});
-  
+
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
       title: 'Personality Test',
-      home: TestView(),
       debugShowCheckedModeBanner: false,
+      home: const FormView(),
     );
   }
 }
-
