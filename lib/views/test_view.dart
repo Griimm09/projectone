@@ -1,11 +1,21 @@
 import 'package:flutter/material.dart';
+import 'package:projectone/views/home_screen.dart';
 import '../controllers/test_controller.dart';
-import 'result_view.dart';
-import 'form_view.dart';
 import '../widgets/question_widget.dart';
 
 class TestView extends StatefulWidget {
-  const TestView({super.key});
+  final String nama;
+  final String ttl;
+  final String umur;
+  final String kelas;
+
+  const TestView({
+    super.key,
+    required this.nama,
+    required this.ttl,
+    required this.umur,
+    required this.kelas,
+  });
 
   @override
   State<TestView> createState() => _TestViewState();
@@ -13,6 +23,37 @@ class TestView extends StatefulWidget {
 
 class _TestViewState extends State<TestView> {
   final controller = TestController();
+  bool _isUploading = false;
+
+  Future<void> uploadToFirestore(Map<String, double> hasil) async {
+    setState(() => _isUploading = true);
+
+    try {
+      await controller.saveTestResults(
+        name: widget.nama,
+        birthPlaceDate: widget.ttl,
+        age: widget.umur,
+        studentClass: widget.kelas,
+        results: hasil,
+      );
+
+      Navigator.pushReplacement(
+        context,
+        MaterialPageRoute(builder: (_) => HomeScreen()),
+      );
+    } catch (e) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text('Gagal mengirim data: $e'),
+          backgroundColor: Colors.red,
+        ),
+      );
+    } finally {
+      if (mounted) {
+        setState(() => _isUploading = false);
+      }
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -85,10 +126,7 @@ class _TestViewState extends State<TestView> {
                 const SizedBox(height: 20),
 
                 LinearProgressIndicator(
-                  value: controller.questions
-                          .where((q) => q.answer != null)
-                          .length /
-                      controller.questions.length,
+                  value: controller.getProgress(),
                   backgroundColor: Colors.grey[300],
                   color: Colors.green,
                 ),
@@ -115,55 +153,51 @@ class _TestViewState extends State<TestView> {
                   ),
                 ),
 
-                // Tombol lihat hasil
                 ElevatedButton(
-                  onPressed: () {
-                    if (controller.questions.any((q) => q.answer == null)) {
-                      ScaffoldMessenger.of(context).showSnackBar(
-                        const SnackBar(
-                          content:
-                              Text('Harap isi semua pertanyaan terlebih dahulu.'),
-                        ),
-                      );
-                    } else {
-                      Navigator.pushReplacement(
-                        context,
-                        MaterialPageRoute(
-                          builder: (_) =>
-                              ResultView(results: controller.calculateResult()),
-                        ),
-                      );
-                    }
-                  },
+                  onPressed: _isUploading
+                      ? null
+                      : () async {
+                          if (controller.questions.any(
+                            (q) => q.answer == null,
+                          )) {
+                            ScaffoldMessenger.of(context).showSnackBar(
+                              const SnackBar(
+                                content: Text(
+                                  'Harap isi semua pertanyaan terlebih dahulu.',
+                                ),
+                              ),
+                            );
+                          } else {
+                            final hasil = controller.calculateResult();
+                            await uploadToFirestore(hasil);
+                          }
+                        },
                   style: ElevatedButton.styleFrom(
                     backgroundColor: Colors.blue[700],
-                    padding:
-                        const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 24,
+                      vertical: 12,
+                    ),
+                    minimumSize: const Size(double.infinity, 50),
                   ),
-                  child:
-                      const Text("Lihat Hasil", style: TextStyle(fontSize: 16)),
+                  child: _isUploading
+                      ? const SizedBox(
+                          width: 20,
+                          height: 20,
+                          child: CircularProgressIndicator(
+                            color: Colors.white,
+                            strokeWidth: 2,
+                          ),
+                        )
+                      : const Text(
+                          "Selesai Test",
+                          style: TextStyle(fontSize: 16),
+                        ),
                 ),
-                const SizedBox(height: 70), // beri jarak agar tombol di bawah tidak ketumpuk
+                const SizedBox(height: 70),
               ],
             ),
           ),
-
-          // Tombol kembali pojok kanan bawah
-          Positioned(
-            bottom: 16,
-            right: 16,
-            child: FloatingActionButton.extended(
-              onPressed: () {
-                Navigator.pushReplacement(
-                  context,
-                  MaterialPageRoute(builder: (_) => const FormView()),
-                );
-              },
-              backgroundColor: Colors.redAccent,
-              icon: const Icon(Icons.arrow_back),
-              label: const Text("Kembali ke Form"),
-            ),
-          )
         ],
       ),
     );

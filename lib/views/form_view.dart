@@ -29,7 +29,14 @@ class _FormViewState extends State<FormView> {
     if (_formKey.currentState!.validate()) {
       Navigator.pushReplacement(
         context,
-        MaterialPageRoute(builder: (_) => const TestView()),
+        MaterialPageRoute(
+          builder: (_) => TestView(
+            nama: _namaController.text,
+            ttl: _ttlController.text,
+            umur: _umurController.text,
+            kelas: _kelasController.text,
+          ),
+        ),
       );
     }
   }
@@ -54,7 +61,7 @@ class _FormViewState extends State<FormView> {
       backgroundColor: Colors.grey[100],
       appBar: AppBar(
         title: const Text("Formulir Siswa"),
-  backgroundColor: const Color(0xFF3674B5),
+        backgroundColor: const Color(0xFF3674B5),
         elevation: 0,
         foregroundColor: Colors.white,
       ),
@@ -79,8 +86,9 @@ class _FormViewState extends State<FormView> {
               TextFormField(
                 controller: _namaController,
                 decoration: _inputDecoration("Nama Lengkap"),
-                validator: (value) =>
-                    (value == null || value.isEmpty) ? 'Nama wajib diisi' : null,
+                validator: (value) => (value == null || value.isEmpty)
+                    ? 'Nama wajib diisi'
+                    : null,
               ),
               const SizedBox(height: 20),
 
@@ -98,8 +106,9 @@ class _FormViewState extends State<FormView> {
                 controller: _umurController,
                 keyboardType: TextInputType.number,
                 decoration: _inputDecoration("Umur"),
-                validator: (value) =>
-                    (value == null || value.isEmpty) ? 'Umur wajib diisi' : null,
+                validator: (value) => (value == null || value.isEmpty)
+                    ? 'Umur wajib diisi'
+                    : null,
               ),
               const SizedBox(height: 20),
 
@@ -107,8 +116,9 @@ class _FormViewState extends State<FormView> {
               TextFormField(
                 controller: _kelasController,
                 decoration: _inputDecoration("Kelas"),
-                validator: (value) =>
-                    (value == null || value.isEmpty) ? 'Kelas wajib diisi' : null,
+                validator: (value) => (value == null || value.isEmpty)
+                    ? 'Kelas wajib diisi'
+                    : null,
               ),
               const SizedBox(height: 36),
 

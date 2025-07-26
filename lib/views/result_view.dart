@@ -1,10 +1,22 @@
 import 'package:flutter/material.dart';
-import 'test_view.dart';
 
 class ResultView extends StatelessWidget {
   final Map<String, double> results;
 
-  const ResultView({super.key, required this.results});
+  // Make other parameters optional
+  final String? nama;
+  final String? ttl;
+  final String? umur;
+  final String? kelas;
+
+  const ResultView({
+    Key? key,
+    required this.results,
+    this.nama,
+    this.ttl,
+    this.umur,
+    this.kelas,
+  }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -25,32 +37,37 @@ class ResultView extends StatelessWidget {
               style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
             ),
             const SizedBox(height: 10),
-            const Placeholder(fallbackHeight: 100), // Ganti dengan grafik atau gambar
+            const Placeholder(fallbackHeight: 100),
             const SizedBox(height: 10),
-            ...results.entries.map((entry) => Padding(
-                  padding: const EdgeInsets.symmetric(vertical: 8),
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      Text(entry.key, style: const TextStyle(fontWeight: FontWeight.w600)),
-                      Text("${entry.value.toStringAsFixed(0)} %"),
-                    ],
-                  ),
-                )),
+            ...results.entries.map(
+              (entry) => Padding(
+                padding: const EdgeInsets.symmetric(vertical: 8),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Text(
+                      entry.key,
+                      style: const TextStyle(fontWeight: FontWeight.w600),
+                    ),
+                    Text("${entry.value.toStringAsFixed(0)} %"),
+                  ],
+                ),
+              ),
+            ),
             const Spacer(),
             Center(
               child: ElevatedButton.icon(
                 onPressed: () {
-                  Navigator.pushReplacement(
-                    context,
-                    MaterialPageRoute(builder: (_) => const TestView()),
-                  );
+                  Navigator.pop(context);
                 },
-                icon: const Icon(Icons.restart_alt),
-                label: const Text("Kembali ke Tes"),
+                icon: const Icon(Icons.arrow_back),
+                label: const Text("Kembali"),
                 style: ElevatedButton.styleFrom(
                   backgroundColor: Colors.blue[700],
-                  padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 24,
+                    vertical: 12,
+                  ),
                   textStyle: const TextStyle(fontSize: 16),
                 ),
               ),

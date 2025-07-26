@@ -1,7 +1,11 @@
+import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
-import 'views/form_view.dart';
+import 'package:projectone/firebase_options.dart';
+import 'views/home_screen.dart';
 
-void main() {
+void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
   runApp(const MyApp());
 }
 
@@ -13,7 +17,7 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
       title: 'Personality Test',
       debugShowCheckedModeBanner: false,
-      home: const FormView(),
+      home: const HomeScreen(),
     );
   }
 }

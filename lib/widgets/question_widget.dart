@@ -18,29 +18,37 @@ class QuestionWidget extends StatelessWidget {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Text(question, style: const TextStyle(fontWeight: FontWeight.bold)),
-        const SizedBox(height: 8),
+        Text(
+          question,
+          style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+        ),
+        const SizedBox(height: 16),
         Row(
-          mainAxisAlignment: MainAxisAlignment.center,
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: scale.map((value) {
-            return GestureDetector(
-              onTap: () => onSelect(value),
-              child: Container(
-                margin: const EdgeInsets.all(6),
-                width: 30,
-                height: 30,
-                decoration: BoxDecoration(
-                  color: selected == value
-                      ? (value < 0 ? Colors.red : (value > 0 ? Colors.green : Colors.black))
-                      : Colors.transparent,
-                  border: Border.all(
-                    color: value < 0 ? Colors.red : (value > 0 ? Colors.green : Colors.black),
-                  ),
-                  shape: BoxShape.circle,
-                ),
+            return ChoiceChip(
+              label: Text(value.toString()),
+              selected: selected == value,
+              onSelected: (bool selected) {
+                if (selected) onSelect(value);
+              },
+              selectedColor: value < 0
+                  ? Colors.red[300]
+                  : (value > 0 ? Colors.green[300] : Colors.grey),
+              labelStyle: TextStyle(
+                color: selected == value ? Colors.white : Colors.black,
               ),
             );
           }).toList(),
+        ),
+        const SizedBox(height: 8),
+        const Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            Text('Sangat Tidak Setuju'),
+            Text('Netral'),
+            Text('Sangat Setuju'),
+          ],
         ),
       ],
     );
