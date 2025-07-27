@@ -5,16 +5,18 @@ class SiswaService {
 
   Future<void> addSiswa({
     required String nama,
-    required String ttl,
+    required String tempat_lahir,
+    required String tanggal_lahir,
     required String umur,
     required String kelas,
     required List<int> jawaban,
     required Map<String, double> hasil,
   }) async {
     try {
-      await _firestore.collection('siswa').add({
+      await _firestore.collection('student').add({
         'nama': nama,
-        'ttl': ttl,
+        'tempat_lahir' : tempat_lahir,
+        'tanggal_lahir': tanggal_lahir,
         'umur': umur,
         'kelas': kelas,
         'jawaban': jawaban,

@@ -3,7 +3,8 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 class Student {
   final String id;
   final String name;
-  final String birthPlaceDate;
+  final String birthPlace;
+  final String birthDate;
   final String age;
   final String studentClass;
   final List<int> answers;
@@ -13,7 +14,8 @@ class Student {
   Student({
     this.id = '',
     required this.name,
-    required this.birthPlaceDate,
+    required this.birthPlace,
+    required this.birthDate,
     required this.age,
     required this.studentClass,
     required this.answers,
@@ -21,10 +23,13 @@ class Student {
     required this.createdAt,
   });
 
+  /// Konversi data ke Map agar bisa dikirim ke Firestore
   Map<String, dynamic> toMap() {
     return {
+      'id': id,
       'name': name,
-      'birthPlaceDate': birthPlaceDate,
+      'birthPlace': birthPlace,
+      'birthDate': birthDate,
       'age': age,
       'class': studentClass,
       'answers': answers,
@@ -33,28 +38,38 @@ class Student {
     };
   }
 
-  factory Student.fromMap(Map<String, dynamic> map, String id) {
-    // Validate answers are in range -3 to 3
-    final answers = List<int>.from(map['answers'] ?? []);
+  /// Membuat objek Student dari Map (data Firestore)
+  factory Student.fromMap(Map<String, dynamic> map, String docId) {
+    // Ambil dan validasi jawaban
+    final List<dynamic> rawAnswers = map['answers'] ?? [];
+    final List<int> answers = rawAnswers.cast<int>();
     if (answers.any((a) => a < -3 || a > 3)) {
       throw Exception('Invalid answer value');
     }
 
-    // Validate results percentages are between 0-100
-    final results = Map<String, double>.from(map['results'] ?? {});
-    if (results.values.any((v) => v < 0 || v > 100)) {
-      throw Exception('Invalid result value');
-    }
+    // Ambil dan validasi hasil
+    final Map<String, dynamic> rawResults = map['results'] ?? {};
+    final Map<String, double> results = rawResults.map((key, value) {
+      final v = (value is int) ? value.toDouble() : value;
+      if (v < 0 || v > 100) {
+        throw Exception('Invalid result value for $key');
+      }
+      return MapEntry(key, v);
+    });
+
+    // Ambil waktu pembuatan
+    final Timestamp createdTimestamp = map['createdAt'] as Timestamp;
 
     return Student(
-      id: id,
+      id: map['id'] ?? docId,
       name: map['name'] ?? '',
-      birthPlaceDate: map['birthPlaceDate'] ?? '',
+      birthPlace: map['birthPlace'] ?? '',
+      birthDate: map['birthDate'] ?? '',
       age: map['age'] ?? '',
       studentClass: map['class'] ?? '',
       answers: answers,
       results: results,
-      createdAt: (map['createdAt'] as Timestamp).toDate(),
+      createdAt: createdTimestamp.toDate(),
     );
   }
 }

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 import 'test_view.dart';
 
 class FormView extends StatefulWidget {
@@ -12,27 +13,53 @@ class _FormViewState extends State<FormView> {
   final _formKey = GlobalKey<FormState>();
 
   final _namaController = TextEditingController();
-  final _ttlController = TextEditingController();
+  final _tempatLahirController = TextEditingController();
+  final _tanggalLahirController = TextEditingController();
   final _umurController = TextEditingController();
   final _kelasController = TextEditingController();
+
+  DateTime? _selectedDate;
 
   @override
   void dispose() {
     _namaController.dispose();
-    _ttlController.dispose();
+    _tempatLahirController.dispose();
+    _tanggalLahirController.dispose();
     _umurController.dispose();
     _kelasController.dispose();
     super.dispose();
   }
 
+  Future<void> _selectTanggalLahir(BuildContext context) async {
+    final DateTime? pickedDate = await showDatePicker(
+      context: context,
+      initialDate: _selectedDate ?? DateTime(2005),
+      firstDate: DateTime(1900),
+      lastDate: DateTime.now(),
+      helpText: 'Pilih Tanggal Lahir',
+    );
+    if (pickedDate != null) {
+      setState(() {
+        _selectedDate = pickedDate;
+        _tanggalLahirController.text =
+            DateFormat('dd-MM-yyyy').format(pickedDate);
+      });
+    }
+  }
+
   void _submitForm() {
     if (_formKey.currentState!.validate()) {
+      // Gabungkan Tempat & Tanggal Lahir
+      final tempatTanggalLahir =
+          '${_tempatLahirController.text.trim()}, ${_tanggalLahirController.text.trim()}';
+
       Navigator.pushReplacement(
         context,
         MaterialPageRoute(
           builder: (_) => TestView(
             nama: _namaController.text,
-            ttl: _ttlController.text,
+            tempat_lahir: tempatTanggalLahir, // kirim gabungan
+            tanggal_lahir: '', // optional: kosongkan kalau tidak diperlukan
             umur: _umurController.text,
             kelas: _kelasController.text,
           ),
@@ -51,7 +78,8 @@ class _FormViewState extends State<FormView> {
         borderRadius: BorderRadius.circular(12),
         borderSide: BorderSide.none,
       ),
-      contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
+      contentPadding:
+          const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
     );
   }
 
@@ -82,26 +110,38 @@ class _FormViewState extends State<FormView> {
               ),
               const SizedBox(height: 28),
 
-              // Field: Nama
+              // Nama
               TextFormField(
                 controller: _namaController,
                 decoration: _inputDecoration("Nama Lengkap"),
+                validator: (value) =>
+                    (value == null || value.isEmpty) ? 'Nama wajib diisi' : null,
+              ),
+              const SizedBox(height: 20),
+
+              // Tempat Lahir
+              TextFormField(
+                controller: _tempatLahirController,
+                decoration: _inputDecoration("Tempat Lahir"),
                 validator: (value) => (value == null || value.isEmpty)
-                    ? 'Nama wajib diisi'
+                    ? 'Tempat lahir wajib diisi'
                     : null,
               ),
               const SizedBox(height: 20),
 
-              // Field: TTL
+              // Tanggal Lahir (pakai DatePicker)
               TextFormField(
-                controller: _ttlController,
-                decoration: _inputDecoration("Tempat, Tanggal Lahir"),
-                validator: (value) =>
-                    (value == null || value.isEmpty) ? 'TTL wajib diisi' : null,
+                controller: _tanggalLahirController,
+                readOnly: true,
+                decoration: _inputDecoration("Tanggal Lahir"),
+                onTap: () => _selectTanggalLahir(context),
+                validator: (value) => (value == null || value.isEmpty)
+                    ? 'Tanggal lahir wajib diisi'
+                    : null,
               ),
               const SizedBox(height: 20),
 
-              // Field: Umur
+              // Umur
               TextFormField(
                 controller: _umurController,
                 keyboardType: TextInputType.number,
@@ -112,7 +152,7 @@ class _FormViewState extends State<FormView> {
               ),
               const SizedBox(height: 20),
 
-              // Field: Kelas
+              // Kelas
               TextFormField(
                 controller: _kelasController,
                 decoration: _inputDecoration("Kelas"),
@@ -122,7 +162,7 @@ class _FormViewState extends State<FormView> {
               ),
               const SizedBox(height: 36),
 
-              // Button: Lanjut
+              // Tombol Submit
               SizedBox(
                 width: double.infinity,
                 child: ElevatedButton(

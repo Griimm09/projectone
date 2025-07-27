@@ -5,14 +5,16 @@ import '../widgets/question_widget.dart';
 
 class TestView extends StatefulWidget {
   final String nama;
-  final String ttl;
+  final String tempat_lahir;
+  final String tanggal_lahir;
   final String umur;
   final String kelas;
 
   const TestView({
     super.key,
     required this.nama,
-    required this.ttl,
+    required this.tempat_lahir,
+    required this.tanggal_lahir,
     required this.umur,
     required this.kelas,
   });
@@ -31,7 +33,8 @@ class _TestViewState extends State<TestView> {
     try {
       await controller.saveTestResults(
         name: widget.nama,
-        birthPlaceDate: widget.ttl,
+        birthPlace: widget.tempat_lahir,
+        birthDate: widget.tempat_lahir,
         age: widget.umur,
         studentClass: widget.kelas,
         results: hasil,

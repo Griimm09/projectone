@@ -5,12 +5,12 @@ class FirebaseService {
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
 
   Future<void> saveStudent(Student student) async {
-    await _firestore.collection('students').add(student.toMap());
+    await _firestore.collection('student').add(student.toMap());
   }
 
-  Future<List<Student>> getStudents() async {
+  Future<List<Student>> getStudent() async {
     final querySnapshot = await _firestore
-        .collection('students')
+        .collection('student')
         .orderBy('createdAt', descending: true)
         .get();
 
@@ -19,9 +19,9 @@ class FirebaseService {
     }).toList();
   }
 
-  Stream<List<Student>> streamStudents() {
+  Stream<List<Student>> streamStudent() {
     return _firestore
-        .collection('students')
+        .collection('student')
         .orderBy('createdAt', descending: true)
         .snapshots()
         .map((snapshot) {
