@@ -70,7 +70,6 @@ class _DataViewState extends State<DataView> {
 
               final name = data['name'] ?? '-';
               final age = data['age'] ?? '-';
-              final birthPlace = data['birthPlace'] ?? '-';
               final birthDate = data['birthDate'] ?? '-';
               final studentClass = data['studentClass'] ?? '-';
               final results = data['results'] as Map<String, dynamic>? ?? {};
@@ -127,7 +126,7 @@ class _DataViewState extends State<DataView> {
                           child: Text(
                             '''
 Umur: $age tahun
-TTL: $birthPlace, $birthDate
+TTL: $birthDate
 Kelas: $studentClass
 Hasil Tes:
 ${formatResult(results)}
