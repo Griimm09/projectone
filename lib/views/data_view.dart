@@ -18,13 +18,13 @@ class _DataViewState extends State<DataView> {
   Future<void> _deleteStudent(String id) async {
     try {
       await _firestore.collection(_collection).doc(id).delete();
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Data berhasil dihapus')),
-      );
+      ScaffoldMessenger.of(
+        context,
+      ).showSnackBar(const SnackBar(content: Text('Data berhasil dihapus')));
     } catch (e) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Gagal menghapus data: $e')),
-      );
+      ScaffoldMessenger.of(
+        context,
+      ).showSnackBar(SnackBar(content: Text('Gagal menghapus data: $e')));
     }
   }
 
@@ -70,7 +70,8 @@ class _DataViewState extends State<DataView> {
 
               final name = data['name'] ?? '-';
               final age = data['age'] ?? '-';
-              final birthDate = data['birthDate'] ?? '-';
+              final birthInfo =
+                  '${data['birthPlace'] ?? '-'}, ${data['birthDate'] ?? '-'}';
               final studentClass = data['studentClass'] ?? '-';
               final results = data['results'] as Map<String, dynamic>? ?? {};
 
@@ -113,7 +114,8 @@ class _DataViewState extends State<DataView> {
                           ),
                           IconButton(
                             icon: const Icon(Icons.delete, color: Colors.red),
-                            onPressed: () => _showDeleteDialog(context, id, name),
+                            onPressed: () =>
+                                _showDeleteDialog(context, id, name),
                           ),
                         ],
                       ),
@@ -123,16 +125,13 @@ class _DataViewState extends State<DataView> {
                         padding: const EdgeInsets.fromLTRB(16, 0, 16, 12),
                         child: Align(
                           alignment: Alignment.centerLeft,
-                          child: Text(
-                            '''
+                          child: Text('''
 Umur: $age tahun
-TTL: $birthDate
+TTL: $birthInfo
 Kelas: $studentClass
 Hasil Tes:
 ${formatResult(results)}
-''',
-                            style: const TextStyle(fontSize: 13),
-                          ),
+''', style: const TextStyle(fontSize: 13)),
                         ),
                       ),
                   ],
@@ -169,12 +168,20 @@ ${formatResult(results)}
     );
   }
 
-  void _showEditPopup(BuildContext context, String id, Map<String, dynamic> data) {
+  void _showEditPopup(
+    BuildContext context,
+    String id,
+    Map<String, dynamic> data,
+  ) {
     final _nameController = TextEditingController(text: data['name']);
     final _ageController = TextEditingController(text: data['age']?.toString());
-    final _birthPlaceController = TextEditingController(text: data['birthPlace']);
+    final _birthPlaceController = TextEditingController(
+      text: data['birthPlace'],
+    );
     final _birthDateController = TextEditingController(text: data['birthDate']);
-    final _classController = TextEditingController(text: data['studentClass']);
+    final _studentClassController = TextEditingController(
+      text: data['studentClass'],
+    );
 
     showDialog(
       context: context,
@@ -201,7 +208,7 @@ ${formatResult(results)}
                 decoration: const InputDecoration(labelText: 'Tanggal Lahir'),
               ),
               TextField(
-                controller: _classController,
+                controller: _studentClassController,
                 decoration: const InputDecoration(labelText: 'Kelas'),
               ),
             ],
@@ -220,7 +227,7 @@ ${formatResult(results)}
                   'age': int.tryParse(_ageController.text.trim()) ?? 0,
                   'birthPlace': _birthPlaceController.text.trim(),
                   'birthDate': _birthDateController.text.trim(),
-                  'studentClass': _classController.text.trim(),
+                  'studentClass': _studentClassController.text.trim(),
                   'updatedAt': FieldValue.serverTimestamp(),
                 });
                 Navigator.pop(context);

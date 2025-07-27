@@ -4,23 +4,23 @@ class SiswaService {
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
 
   Future<void> addSiswa({
-    required String nama,
-    required String tempat_lahir,
-    required String tanggal_lahir,
-    required String umur,
-    required String kelas,
-    required List<int> jawaban,
-    required Map<String, double> hasil,
+    required String name,
+    required String birthPlace,
+    required String birthDate,
+    required String age,
+    required String studentClass,
+    required List<int> answers,
+    required Map<String, double> results,
   }) async {
     try {
       await _firestore.collection('student').add({
-        'nama': nama,
-        'tempat_lahir' : tempat_lahir,
-        'tanggal_lahir': tanggal_lahir,
-        'umur': umur,
-        'kelas': kelas,
-        'jawaban': jawaban,
-        'hasil': hasil,
+        'name': name,
+        'birth_place': birthPlace,
+        'birth_date': birthDate,
+        'age': age,
+        'student_class': studentClass,
+        'answers': answers,
+        'results': results,
         'timestamp': FieldValue.serverTimestamp(),
       });
     } catch (e) {

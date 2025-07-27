@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:projectone/utils/app_colors.dart';
 import 'form_view.dart';
 import 'data_view.dart';
-import 'result_view.dart';
 
 class HomeScreen extends StatelessWidget {
   const HomeScreen({super.key});
@@ -77,25 +76,6 @@ class HomeScreen extends StatelessWidget {
               ),
 
               const SizedBox(height: 20),
-
-              _buildButton(
-                context: context,
-                label: "Hasil Tes",
-                onPressed: () {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder: (_) => const ResultView(
-                        results: {
-                          'Ekstrovert': 75,
-                          'Terbuka': 60,
-                          'Cemas': 45,
-                        },
-                      ),
-                    ),
-                  );
-                },
-              ),
             ],
           ),
         ),

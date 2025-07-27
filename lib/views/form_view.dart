@@ -12,21 +12,21 @@ class FormView extends StatefulWidget {
 class _FormViewState extends State<FormView> {
   final _formKey = GlobalKey<FormState>();
 
-  final _namaController = TextEditingController();
-  final _tempatLahirController = TextEditingController();
-  final _tanggalLahirController = TextEditingController();
-  final _umurController = TextEditingController();
-  final _kelasController = TextEditingController();
+  final _nameController = TextEditingController();
+  final _birthPlaceController = TextEditingController();
+  final _birthDateController = TextEditingController();
+  final _ageController = TextEditingController();
+  final _studentClassController = TextEditingController();
 
   DateTime? _selectedDate;
 
   @override
   void dispose() {
-    _namaController.dispose();
-    _tempatLahirController.dispose();
-    _tanggalLahirController.dispose();
-    _umurController.dispose();
-    _kelasController.dispose();
+    _nameController.dispose();
+    _birthPlaceController.dispose();
+    _birthDateController.dispose();
+    _ageController.dispose();
+    _studentClassController.dispose();
     super.dispose();
   }
 
@@ -41,27 +41,22 @@ class _FormViewState extends State<FormView> {
     if (pickedDate != null) {
       setState(() {
         _selectedDate = pickedDate;
-        _tanggalLahirController.text =
-            DateFormat('dd-MM-yyyy').format(pickedDate);
+        _birthDateController.text = DateFormat('dd-MM-yyyy').format(pickedDate);
       });
     }
   }
 
   void _submitForm() {
     if (_formKey.currentState!.validate()) {
-      // Gabungkan Tempat & Tanggal Lahir
-      final tempatTanggalLahir =
-          '${_tempatLahirController.text.trim()}, ${_tanggalLahirController.text.trim()}';
-
       Navigator.pushReplacement(
         context,
         MaterialPageRoute(
           builder: (_) => TestView(
-            nama: _namaController.text,
-            tempat_lahir: tempatTanggalLahir, // kirim gabungan
-            tanggal_lahir: '', // optional: kosongkan kalau tidak diperlukan
-            umur: _umurController.text,
-            kelas: _kelasController.text,
+            name: _nameController.text,
+            birthPlace: _birthPlaceController.text,
+            birthDate: _birthDateController.text,
+            age: _ageController.text,
+            studentClass: _studentClassController.text,
           ),
         ),
       );
@@ -78,8 +73,7 @@ class _FormViewState extends State<FormView> {
         borderRadius: BorderRadius.circular(12),
         borderSide: BorderSide.none,
       ),
-      contentPadding:
-          const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
+      contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
     );
   }
 
@@ -112,16 +106,17 @@ class _FormViewState extends State<FormView> {
 
               // Nama
               TextFormField(
-                controller: _namaController,
+                controller: _nameController,
                 decoration: _inputDecoration("Nama Lengkap"),
-                validator: (value) =>
-                    (value == null || value.isEmpty) ? 'Nama wajib diisi' : null,
+                validator: (value) => (value == null || value.isEmpty)
+                    ? 'Nama wajib diisi'
+                    : null,
               ),
               const SizedBox(height: 20),
 
               // Tempat Lahir
               TextFormField(
-                controller: _tempatLahirController,
+                controller: _birthPlaceController,
                 decoration: _inputDecoration("Tempat Lahir"),
                 validator: (value) => (value == null || value.isEmpty)
                     ? 'Tempat lahir wajib diisi'
@@ -131,7 +126,7 @@ class _FormViewState extends State<FormView> {
 
               // Tanggal Lahir (pakai DatePicker)
               TextFormField(
-                controller: _tanggalLahirController,
+                controller: _birthDateController,
                 readOnly: true,
                 decoration: _inputDecoration("Tanggal Lahir"),
                 onTap: () => _selectTanggalLahir(context),
@@ -143,7 +138,7 @@ class _FormViewState extends State<FormView> {
 
               // Umur
               TextFormField(
-                controller: _umurController,
+                controller: _ageController,
                 keyboardType: TextInputType.number,
                 decoration: _inputDecoration("Umur"),
                 validator: (value) => (value == null || value.isEmpty)
@@ -154,7 +149,7 @@ class _FormViewState extends State<FormView> {
 
               // Kelas
               TextFormField(
-                controller: _kelasController,
+                controller: _studentClassController,
                 decoration: _inputDecoration("Kelas"),
                 validator: (value) => (value == null || value.isEmpty)
                     ? 'Kelas wajib diisi'

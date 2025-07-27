@@ -4,19 +4,19 @@ import '../controllers/test_controller.dart';
 import '../widgets/question_widget.dart';
 
 class TestView extends StatefulWidget {
-  final String nama;
-  final String tempat_lahir;
-  final String tanggal_lahir;
-  final String umur;
-  final String kelas;
+  final String name;
+  final String birthPlace;
+  final String birthDate;
+  final String age;
+  final String studentClass;
 
   const TestView({
     super.key,
-    required this.nama,
-    required this.tempat_lahir,
-    required this.tanggal_lahir,
-    required this.umur,
-    required this.kelas,
+    required this.name,
+    required this.birthPlace,
+    required this.birthDate,
+    required this.age,
+    required this.studentClass,
   });
 
   @override
@@ -32,17 +32,17 @@ class _TestViewState extends State<TestView> {
 
     try {
       await controller.saveTestResults(
-        name: widget.nama,
-        birthPlace: widget.tempat_lahir,
-        birthDate: widget.tempat_lahir,
-        age: widget.umur,
-        studentClass: widget.kelas,
+        name: widget.name,
+        birthPlace: widget.birthPlace,
+        birthDate: widget.birthDate,
+        age: widget.age,
+        studentClass: widget.studentClass,
         results: hasil,
       );
 
-      Navigator.pushReplacement(
-        context,
-        MaterialPageRoute(builder: (_) => HomeScreen()),
+      Navigator.of(context).pushAndRemoveUntil(
+        MaterialPageRoute(builder: (context) => HomeScreen()),
+        (Route<dynamic> route) => false,
       );
     } catch (e) {
       ScaffoldMessenger.of(context).showSnackBar(
